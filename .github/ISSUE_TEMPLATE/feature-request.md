@@ -1,0 +1,31 @@
+---
+name: Feature request
+about: Suggest an idea for this project
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+---
+name: 이슈 템프릿
+about: Describe this issue template's purpose here.
+title: ''
+labels: ''
+assignees: ''
+
+---
+
+[Issue]---------------------------------
+
+## ✏️ Description
+- dashboard 페이지 리팩토링
+
+## 📋 TODO
+- [ ] 할 일 1
+- [ ] 할 일 2
+
+## ⏱️ 예상 소요 시간
+- 3시간
+
+## 💬 추가 설명
