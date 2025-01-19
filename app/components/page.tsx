@@ -3,7 +3,7 @@ import Button from '@/components/common/button';
 import Navbar from '@/components/common/navbar/Navbar';
 import ModalComponent from './modal';
 import InputPage from './InputPage';
-import PagenationComponent from './pagenation';
+import KakaoMap from './kakomap';
 
 async function Page() {
   const data = await new Promise<string>(resolve => setTimeout(() => resolve('비동기 데이터 1초'), 1000));
@@ -42,8 +42,9 @@ async function Page() {
       <li>
         <InputPage />
       </li>
+      <hr />
       <li>
-        <PagenationComponent />
+        <KakaoMap address="서울 중구 청계천로 100" houseName="코드잇" />
       </li>
     </ul>
   );
