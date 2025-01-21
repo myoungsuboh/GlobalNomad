@@ -1,6 +1,7 @@
 import type {Metadata} from 'next';
 import '@/styles/globals.css';
 import Script from 'next/script';
+import ClientSideLayout from './ClientSideLayout';
 
 export const metadata: Metadata = {
   title: 'Global Nomad',
@@ -12,11 +13,7 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children}: Readonly<{children: React.ReactNode}>) {
   return (
     <html lang="ko">
       <head>
@@ -25,7 +22,11 @@ export default function RootLayout({
           strategy="beforeInteractive"
         />
       </head>
-      <body className="max-w-full">{children}</body>
+      <body className="max-w-full">
+        <ClientSideLayout>
+          <main>{children}</main>
+        </ClientSideLayout>
+      </body>
     </html>
   );
 }

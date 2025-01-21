@@ -7,7 +7,7 @@ const PagenationComponent = () => {
     console.log(page);
   };
 
-  return <Pagenation size={30} showItemCount={3} onChange={handlePageChange} />;
+  return <Pagenation size={31} showItemCount={3} onChange={handlePageChange} />;
 };
 
 export default PagenationComponent;
