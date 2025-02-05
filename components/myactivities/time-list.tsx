@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {useFieldArray, Controller, useFormContext} from 'react-hook-form';
 import Input from '../common/Input';
 import SelectBox from '../common/selectbox';
@@ -6,10 +7,11 @@ import Image from 'next/image';
 import minusBtn from '@/public/icon/ic_minus_btn.svg';
 import plusBtn from '@/public/icon/ic_plus_btn.svg';
 import arrowDown from '@/public/icon/icon_arrow_down.svg';
+
 export default function TimeList() {
   const {
     control,
-    formState: {},
+    formState: {errors},
     setError,
     clearErrors,
     watch,
@@ -30,7 +32,6 @@ export default function TimeList() {
 
   const watchedField = watch('schedules');
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleChange = (field: any, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>, index: number) => {
     const newValue = e.target.value;
 
@@ -55,7 +56,6 @@ export default function TimeList() {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setInvalidDateError = (index: number, setError: any) => {
     setError(`schedules.${index}.date`, {
       type: 'manual',
@@ -140,7 +140,9 @@ export default function TimeList() {
               </div>
             )}
           </div>
-
+          {(errors?.schedules as any)?.[index]?.date?.message && (
+            <span className="text-sm text-red-500">{(errors.schedules as any)[index].date.message}</span>
+          )}
           {index === 0 && fields.length > 1 && <hr className="mt-4"></hr>}
         </div>
       ))}

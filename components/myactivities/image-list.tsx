@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import cancleBtn from '@/public/icon/ic_cancle_btn.svg';
 import plusIcon from '@/public/icon/ic_plus_icon.svg';
 import Image from 'next/image';
@@ -9,7 +10,6 @@ import {useMutation} from '@tanstack/react-query';
 interface ImageListType {
   maxImages?: number;
   name?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trigger?: (names: any) => void;
 }
 

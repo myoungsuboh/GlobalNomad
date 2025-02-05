@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {forwardRef, useEffect, useImperativeHandle, useState} from 'react';
 import Input from '@/components/common/Input';
 import SelectBox from '@/components/common/selectbox';
@@ -58,7 +59,6 @@ const ActivitiesRegister = forwardRef<{submitForm: () => void}, ActivitiesRegist
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getErrorMessage = (errors: any, type: string) => {
     return <span className={`error-message ${errors[type]?.message ? 'visible opacity-100' : 'invisible opacity-0'}`}>{errors[type]?.message}</span>;
   };
@@ -69,7 +69,7 @@ const ActivitiesRegister = forwardRef<{submitForm: () => void}, ActivitiesRegist
 
   useEffect(() => {
     onValidChange(isValid); // ref 로전달불가 props로 직접전달
-  }, [isValid, onValidChange]);
+  }, [isValid]);
 
   const options = [
     {value: '문화 · 예술', label: '문화 · 예술'},
