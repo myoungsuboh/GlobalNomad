@@ -21,8 +21,6 @@ function Pagenation({size, showItemCount, onChange}: PagenationType) {
   const [pageInfo, setPageInfo] = useState<Array<PageType>>([]);
   const [selectedPage, setSelectedPage] = useState<number>(1);
 
-  const pageSize = size ? size : 1;
-
   const handlePrevPage = useCallback(() => {
     // 첫 페이지에서 이전 페이지를 누른다면 1번으로 이동
     // ex) <12345> 에서 < 누른 경우
@@ -47,7 +45,7 @@ function Pagenation({size, showItemCount, onChange}: PagenationType) {
     // 다음 pageInfo의 첫번째 값
     const nextFirstPage = pageInfo[0].val + defaultShowPageCount;
     // 마지막 페이지 번호
-    const lastPageNum = Math.ceil(pageSize / showItemCount);
+    const lastPageNum = Math.ceil(size / showItemCount);
     if (nextFirstPage <= lastPageNum) {
       // 계산된 페이지 정보보
       const prevPageArr = [];
@@ -60,7 +58,7 @@ function Pagenation({size, showItemCount, onChange}: PagenationType) {
       setSelectedPage(nextFirstPage);
       onChange(nextFirstPage);
     }
-  }, [pageSize, showItemCount, pageInfo, onChange, defaultPageInfo]);
+  }, [size, showItemCount, pageInfo, onChange, defaultPageInfo]);
 
   const handleBtnClick = (page: number) => {
     setSelectedPage(page);
@@ -68,15 +66,18 @@ function Pagenation({size, showItemCount, onChange}: PagenationType) {
   };
 
   useEffect(() => {
-    const lastPageNum = Math.ceil(pageSize / showItemCount);
+    // n
+    const lastPageNum = Math.ceil(size / showItemCount);
+    // [1,2,3...]
     const pageArr = Array.from({length: lastPageNum > defaultShowPageCount ? defaultShowPageCount : lastPageNum}, (_, i) => i + 1);
+    // [{key: 1, val:1}, ...]
     const basePageInfo = pageArr.map((dt, idx) => {
       return {key: idx, val: dt};
     });
 
     setPageInfo(basePageInfo);
     setDefaultPageInfo(basePageInfo);
-  }, [showItemCount, pageSize]);
+  }, [showItemCount, size]);
 
   return (
     <div className={'flex flex-row items-center justify-center gap-10pxr p-0'}>

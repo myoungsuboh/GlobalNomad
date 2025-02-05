@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-interface ButtonType extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonType {
   className?: string;
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
@@ -9,9 +9,9 @@ interface ButtonType extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
 }
 
-export default function Button({className = '', type = 'button', disabled = false, children, onClick, ...props}: ButtonType) {
+export default function Button({className = '', type = 'button', disabled = false, children, onClick}: ButtonType) {
   return (
-    <button className={className} disabled={disabled} type={type} onClick={onClick} {...props}>
+    <button className={className} disabled={disabled} type={type} onClick={onClick}>
       {children}
     </button>
   );

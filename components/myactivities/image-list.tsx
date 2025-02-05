@@ -9,6 +9,7 @@ import {useMutation} from '@tanstack/react-query';
 interface ImageListType {
   maxImages?: number;
   name?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   trigger?: (names: any) => void;
 }
 
