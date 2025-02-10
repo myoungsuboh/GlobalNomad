@@ -41,8 +41,8 @@ export default function Page() {
   });
 
   const signinMutation = useMutation({
-      mutationFn: (signinData: SigninBody) => postSignin(signinData),
-    });
+    mutationFn: (signinData: SigninBody) => postSignin(signinData),
+  });
 
   const onSubmit = (data: IFormInput) => {
     signinMutation.mutate(data, {
@@ -79,6 +79,11 @@ export default function Page() {
   const handleCloseModal = () => {
     setIsModalOpen(false);
   };
+
+  const handleKakaoLogin = () => {
+    const kakaoAuthURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY}&redirect_uri=${process.env.NEXT_PUBLIC_KAKAO_REDIRECT_URI}&response_type=code`;
+    window.location.href = kakaoAuthURL;
+  }
 
   return (
     <>
@@ -164,8 +169,12 @@ export default function Page() {
                 <hr className="w-[5rem] border border-gray-300" />
               </div>
               <div className="flex justify-center gap-[1rem]">
-                <Image src={GoogleIcon} alt="google icon" />
-                <Image src={KakaoIcon} alt="kakao icon" />
+                <button type="button" onClick={() => alert("Google 로그인 기능이 일시적으로 제한되어 있습니다")}>
+                  <Image src={GoogleIcon} alt="google icon" />
+                </button>
+                <button type="button" onClick={handleKakaoLogin}>
+                  <Image src={KakaoIcon} alt="kakao icon" />
+                </button>
               </div>
             </div>
           </div>
