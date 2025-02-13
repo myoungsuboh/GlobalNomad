@@ -11,10 +11,11 @@ import {getActivitiesId} from '@/service/api/myactivities/getActivitiesId.api';
 import {PatchActivitiesBody} from '@/types/patchActivities.types';
 import {GetActivitiesResponse, SubImage} from '@/types/getActivitiesId.types';
 import Modal from '@/components/common/modal/modal';
+import {useSearchParams} from 'next/navigation';
 
 interface ActivitiesModifyProps {
-  onSubmitParent?: (data: PatchActivitiesBody & GetActivitiesResponse) => void;
-  modifyId: number;
+  onSubmitParent?: (data: PatchActivitiesBody & GetActivitiesResponse, queryId: number) => void;
+  modifyId: number | null;
   onValidChange?: (isValid: boolean) => void;
 }
 
@@ -54,11 +55,13 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
   const [bannerImageUrl, setBannerImageUrl] = useState('');
   const [isOpenError, setIsOpenError] = useState(false);
   const [errorMessege, setErrorMessege] = useState('');
+  const searchParams = useSearchParams();
+  const [queryId, setQueryId] = useState<number | null>(null);
 
   // 수정 api
   const mutation = useMutation({
-    mutationFn: async () => {
-      const response = await getActivitiesId(modifyId);
+    mutationFn: async (id: number) => {
+      const response = await getActivitiesId(id);
       return response;
     },
     onMutate: () => {
@@ -93,9 +96,11 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
   };
 
   const onSubmit: SubmitHandler<PatchActivitiesBody & GetActivitiesResponse> = data => {
-    console.log('Form Data:', data);
+    console.log('Form Data:', data, queryId); // 여기가 왜 0이뜨지?
     if (onSubmitParent) {
-      onSubmitParent(data);
+      if (queryId !== null) {
+        onSubmitParent(data, queryId);
+      }
     }
   };
 
@@ -108,14 +113,28 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
   }));
 
   useEffect(() => {
-    if (onValidChange) onValidChange(isValid); // ref 로전달불가 props로 직접전달
+    if (onValidChange) onValidChange(isValid);
   }, [isValid, onValidChange]);
+
+  useEffect(() => {
+    const idFromQuery = Number(searchParams.get('id'));
+
+    if (!isNaN(idFromQuery)) {
+      setQueryId(idFromQuery);
+    }
+  }, [searchParams]);
 
   const mutationRef = useRef(mutation);
 
   useEffect(() => {
+    if (queryId !== null) {
+      mutationRef.current.mutate(queryId);
+    }
+  }, [queryId]);
+
+  useEffect(() => {
     if (modifyId) {
-      mutationRef.current.mutate();
+      setQueryId(modifyId);
     }
   }, [modifyId]);
 
@@ -153,6 +172,7 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
                   value={value}
                   onChange={onChange}
                   error={errors.title?.message}
+                  maxLength={50}
                   placeholder="제목 ex) K-뷰티 메이크업 클래스"
                   className="placehorder w-full"
                 />
@@ -190,6 +210,7 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
                 <textarea
                   required={true}
                   value={value}
+                  maxLength={1000}
                   onChange={onChange}
                   placeholder="체험 중 어떤 활동을 하게 될지 알려주세요."
                   className="placehorder h-40 w-full cursor-text resize-none rounded-s border border-gray-700 p-4 focus:outline-none focus:ring-2 focus:ring-green-950"
@@ -256,7 +277,7 @@ const ActivitiesModify = forwardRef<{submitForm: () => void}, ActivitiesModifyPr
           </div>
         </form>
       </FormProvider>
-      {isOpenError && <Modal type="big" message={errorMessege} onClose={() => setIsOpenError(false)}></Modal>}
+      {isOpenError && <Modal message={errorMessege} onClose={() => setIsOpenError(false)}></Modal>}
     </>
   );
 });

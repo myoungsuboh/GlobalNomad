@@ -1,5 +1,6 @@
+'use client';
 import Button from '@/components/common/button';
-import {useState, useRef, Fragment} from 'react';
+import {useState, useRef, Fragment, useEffect} from 'react';
 import ActivitiesRegister from './activities-register';
 import Modal from '@/components/common/modal/modal';
 import Image from 'next/image';
@@ -15,12 +16,18 @@ import ActivitiesModify from './activities-modify';
 import {PatchActivitiesBody} from '@/types/patchActivities.types';
 import {patchActivities} from '@/service/api/myactivities/patchActivities.api';
 import {deleteActivities} from '@/service/api/myactivities/deleteActivities.api';
+import {useRouter} from 'next/navigation';
 import NonDataPage from './non-data';
 
 type ContentType = 'manage' | 'register' | 'modify' | 'delete';
 
-export default function MyActivities({onclose}: {onclose: () => void}) {
-  const [content, setContent] = useState<ContentType>('manage');
+interface MyActivitiesProps {
+  contentType: ContentType;
+}
+
+export default function MyActivities({contentType}: MyActivitiesProps) {
+  const router = useRouter();
+  const [content, setContent] = useState<ContentType>(contentType);
   const formRef = useRef<{submitForm: () => void} | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenError, setIsOpenError] = useState(false);
@@ -86,7 +93,18 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
     },
   });
 
+  const updateQueryParams = (newParams: Record<string, string>) => {
+    const params = new URLSearchParams(window.location.search);
+
+    Object.entries(newParams).forEach(([key, value]) => {
+      params.set(key, value);
+    });
+
+    router.push(`?${params.toString()}`);
+  };
+
   const handleClickModify = (id: number) => {
+    updateQueryParams({type: 'modify', id: id.toString()});
     setContent('modify');
     setModifyId(id);
   };
@@ -97,7 +115,6 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
   };
 
   const handleSubmit = (data: PostActivitiesBody) => {
-    console.log('Form Data from Parent:', data);
     const updateData = {
       ...data,
       bannerImageUrl: data.bannerImageUrl.toString(),
@@ -108,7 +125,7 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
 
   type ActivityData<T> = PatchActivitiesBody & T;
 
-  const handleModifySubmit = <T extends object>(data: ActivityData<T>) => {
+  const handleModifySubmit = <T extends object>(data: ActivityData<T>, queryId: number) => {
     const schedulesToAdd = data.schedulesToAdd || [];
     const filterSchedulesToAdd = data.schedulesToAddTemp;
 
@@ -130,7 +147,7 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
       scheduleIdsToRemove: data.scheduleIdsToRemove,
       schedulesToAdd: schedulesToAdd || [],
     };
-    patchActivitiesMutation.mutate({id: modifyId, body: params});
+    patchActivitiesMutation.mutate({id: queryId, body: params});
   };
 
   const triggerSubmit = () => {
@@ -141,8 +158,14 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
 
   const handleClose = () => {
     setIsOpen(false);
-    onclose();
+    updateQueryParams({type: 'manage'});
   };
+
+  useEffect(() => {
+    if (contentType !== content) {
+      setContent(contentType);
+    }
+  }, [contentType, content]);
 
   return (
     <>
@@ -154,7 +177,10 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
               {content === 'manage' ? (
                 <>
                   <Button
-                    onClick={() => setContent('register')}
+                    onClick={() => {
+                      updateQueryParams({type: 'register'});
+                      setContent('register');
+                    }}
                     className="h-48pxr w-100pxr gap-4pxr rounded-md bg-primary pb-8pxr pl-16pxr pr-16pxr pt-8pxr text-white"
                   >
                     등록하기
@@ -178,14 +204,21 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
                 </Button>
               )}
               <div className="mb-2 flex justify-end tablet:hidden">
-                <Image onClick={onclose} src={closeButton} alt="모달 닫기 버튼" className="cursor-pointer" width={48} height={48} />
+                <Image
+                  onClick={() => router.push('/mypage')}
+                  src={closeButton}
+                  alt="모달 닫기 버튼"
+                  className="cursor-pointer"
+                  width={48}
+                  height={48}
+                />
               </div>
             </div>
           </div>
 
           {content === 'manage' && (
             <InfiniteScroll
-              className="h-500pxr w-full pc:h-700pxr"
+              className="h-550pxr w-full pc:h-700pxr"
               queryKey="key"
               fetchData={context => getActivitiesList({...context, meta: {size: 20}})}
               render={group => {
@@ -228,13 +261,9 @@ export default function MyActivities({onclose}: {onclose: () => void}) {
         </div>
       </div>
       {isOpen && (
-        <Modal
-          type="big"
-          message={`체험 ${content === 'modify' ? '수정' : content === 'register' ? '등록' : '삭제'}이 완료되었습니다`}
-          onClose={handleClose}
-        />
+        <Modal message={`체험 ${content === 'modify' ? '수정' : content === 'register' ? '등록' : '삭제'}이 완료되었습니다`} onClose={handleClose} />
       )}
-      {isOpenError && <Modal type="big" message={errorMessege} onClose={handleClose}></Modal>}
+      {isOpenError && <Modal message={errorMessege} onClose={handleClose}></Modal>}
     </>
   );
 }
