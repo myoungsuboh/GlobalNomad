@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation } from '@tanstack/react-query';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { postOAuth } from '@/service/api/oauth/postOAuth.api';
 import { postOAuthSignin } from '@/service/api/oauth/postOAuthSignin.api';
 import { useAuthStore } from '@/service/store/authStore';
@@ -47,17 +47,17 @@ export default function Page() {
             console.log('회원가입이 필요합니다. /signup 페이지로 이동합니다.');
             router.push(`/signup?code=${token}`);
           } else {
-            console.error('로그인 에러:', error);
+            console.log('로그인 에러:', error);
             router.push('/signin');
           }
         }
       } else {
-        console.error('URL에서 토큰을 찾을 수 없음');
+        console.log('URL에서 토큰을 찾을 수 없음');
         router.push('/signin');
       }
     },
     onError: (error: AxiosError) => {
-      console.error('OAuth 로그인 실패', error);
+      console.log('OAuth 로그인 실패', error);
       router.push('/signin');
     },
     onSettled: () => {

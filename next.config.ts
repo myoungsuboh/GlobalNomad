@@ -47,9 +47,6 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true, // TypeScript 오류를 무시하고 빌드 진행
   },
-  // experimental: {
-  //   optimizeCss: true, // CSS 최적화
-  // },
   optimization: {
     minimize: true, // 빌드 시 최소화
     splitChunks: {
