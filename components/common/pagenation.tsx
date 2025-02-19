@@ -1,5 +1,5 @@
 'use client';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from './button';
 import Image from 'next/image';
 
@@ -23,7 +23,7 @@ function Pagenation({page, size, showItemCount, onChange}: PagenationType) {
 
   const pageSize = size ? size : 1;
 
-  const handlePrevPage = useCallback(() => {
+  const handlePrevPage = () => {
     // 첫 페이지에서 이전 페이지를 누른다면 1번으로 이동
     // ex) <12345> 에서 < 누른 경우
     if (page <= defaultShowPageCount) {
@@ -39,9 +39,9 @@ function Pagenation({page, size, showItemCount, onChange}: PagenationType) {
       const newPage = pageInfo[0].val - defaultShowPageCount;
       onChange(newPage);
     }
-  },[defaultPageInfo, onChange, page, pageInfo]);
+  };
 
-  const handleNextPage = useCallback(() => {
+  const handleNextPage = () => {
     // 다음 pageInfo의 첫번째 값
     const nextFirstPage = pageInfo[0].val + defaultShowPageCount;
     // 마지막 페이지 번호
@@ -59,7 +59,7 @@ function Pagenation({page, size, showItemCount, onChange}: PagenationType) {
     } else {
       onChange(lastPageNum);
     }
-  },[defaultPageInfo, onChange, pageInfo, pageSize, showItemCount]);
+  };
 
   const handleBtnClick = (page: number) => {
     onChange(page);
@@ -83,7 +83,7 @@ function Pagenation({page, size, showItemCount, onChange}: PagenationType) {
       <Button
         key={'prevBtn'}
         className={
-          'relative h-40pxr w-40pxr flex-row items-center justify-center gap-10pxr rounded-2xl border border-solid border-gray-500 bg-white p-0 pc:h-55pxr pc:w-55pxr'
+          'relative h-40pxr w-40pxr flex-row items-center justify-center gap-10pxr rounded-2xl border border-solid border-gray-500 bg-white p-0 dark:bg-slate-200/80 pc:h-55pxr pc:w-55pxr'
         }
         onClick={handlePrevPage}
       >
@@ -109,7 +109,7 @@ function Pagenation({page, size, showItemCount, onChange}: PagenationType) {
       <Button
         key={'nextBtn'}
         className={
-          'relative h-40pxr w-40pxr flex-row items-center justify-center gap-10pxr rounded-2xl border border-solid border-gray-500 bg-white p-0 pc:h-55pxr pc:w-55pxr'
+          'relative h-40pxr w-40pxr flex-row items-center justify-center gap-10pxr rounded-2xl border border-solid border-gray-500 bg-white p-0 dark:bg-slate-200/80 pc:h-55pxr pc:w-55pxr'
         }
         onClick={handleNextPage}
       >
